@@ -6,7 +6,4 @@
 .DS_Store
 /build
 /captures
-*.properties
-/Config.java/
-/Config1.java/
 .externalNativeBuild
