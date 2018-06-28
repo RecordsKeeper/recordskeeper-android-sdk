@@ -15,10 +15,46 @@ import java.util.List;
 import static java.lang.Math.abs;
 import static okio.ByteString.decodeHex;
 
+/**
+ * <h1>Transaction Class Usage</h1>
+ * Transaction class is used to call transaction related functions like create raw transaction, sign transaction, send transaction , retrieve transaction and verify transaction functions which are used to create raw transactions, send transactions, sign transactions, retrieve transactions and verify transactions on the RecordsKeeeper Blockchain.
+ * <p>Library to work with RecordsKeeper transactions.</p>
+ * You can send transaction, create raw transaction, sign raw transaction, send raw transaction, send signed transaction,
+ retrieve transaction information and calculate transaction's fees by using transaction class. You just have to pass
+ parameters to invoke the pre-defined functions.
+ * <h2>Libraries</h2>
+ * Import these java libraries first to get started with the functionality.<br>
+ * <p><code>import com.squareup.okhttp.Credentials;<br>
+ * import com.squareup.okhttp.MediaType;<br>
+ * import com.squareup.okhttp.OkHttpClient;<br>
+ * import com.squareup.okhttp.Request;<br>
+ * import com.squareup.okhttp.RequestBody;<br>
+ * import com.squareup.okhttp.Response;<br>
+ * import org.json.JSONArray;<br>
+ * import org.json.JSONException;<br>
+ * import org.json.JSONObject;<br>
+ * import java.io.IOException;</code></p>
+ * <h2>Create Connection</h2>
+ * Entry point for accessing any class resources. Import values from config file.
+ * <p><code>Config cfg = new Config();<br>
+ * String url = cfg.getProperty("url");<br>
+ * String chain = cfg.getProperty("chain");</code></p>
+ * URL: Url to connect to the chain ([RPC Host]:[RPC Port]) <br>
+ * Chain-name: chain name <br>
+ * <p>Set the url and chain name value in the config file to change the network-type.</p>
+ * <h2>Node Authentication</h2>
+ * Import values from config file.
+ * <p><code>String rkuser = cfg.getProperty("rkuser");<br>
+ * String passwd = cfg.getProperty("passwd");</code></p>
+ * User name: The rpc user is used to call the APIs.<br>
+ * Password: The rpc password is used to authenticate the APIs.<br>
+ * Now we have node authentication credentials.
+ */
+
 public class Transactions {
 
     private String sender_address;
-    private String reciever_address;
+    private String receiver_address;
     private String data;
     private double amount;
     private String datahex;
@@ -40,16 +76,34 @@ public class Transactions {
     MediaType mediaType = MediaType.parse("application/json");
     String credential = Credentials.basic(rkuser, passwd);
 
+    /**
+     * Default Constructor Class
+     */
+
     public Transactions() throws IOException {}
 
-    public String sendTransaction(String sender_address, String reciever_address, String data, double amount) throws IOException, JSONException {
+    /**
+     * Send Transaction without signing with private key.<br>
+     * sendTransaction() function is used to send transaction by passing reciever's address, sender's address and amount.
+     * <p><code>sendTransaction(sender_address, receiver_address, amount); <br>
+     * txid = sendTransaction(sender_address, receiver_address, amount); <br>
+     * System.out.println(txid);                  //prints transaction id of the sent transaction</code></p>
+     * You have to pass these three arguments to the sendTransaction function call:
+     * @param sender_address Transaction's sender address
+     * @param receiver_address Transaction's receiver address
+     * @param data hex value of the data
+     * @param amount Amount to be sent in transaction
+     * @return It will return the transaction id of the raw transaction.
+     */
+
+    public String sendTransaction(String sender_address, String receiver_address, String data, double amount) throws IOException, JSONException {
 
         this.datahex = "\"" + data + "\"";
         this.sender_address = "\"" + sender_address + "\"";
-        this.reciever_address = "\"" + reciever_address + "\"";
+        this.receiver_address = "\"" + receiver_address + "\"";
         this.amount = amount;
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.reciever_address + " :" + this.amount + "}, [" + this.datahex + "],\"send\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.receiver_address + " :" + this.amount + "}, [" + this.datahex + "],\"send\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -66,14 +120,28 @@ public class Transactions {
         return txid;
     }
 
-    public String createRawTransaction(String sender_address, String reciever_address, double amount, String data) throws IOException, JSONException {
+    /**
+     * Create raw transaction. <br>
+     * createRawTransaction() function is used to create raw transaction by passing reciever's address, sender's address and amount.
+     * <p><code> createRawTransaction(sender_address, reciever_address, amount); <br>
+     * tx_hex = createRawTransaction(sender_address, reciever_address, amount);<br>
+     * System.out.println(tx_hex);      //prints transaction hex of the raw transaction</code></p>
+     * You have to pass these three arguments to the createRawTransaction function call:
+     * @param sender_address Transaction's sender address
+     * @param receiver_address Transaction's receiver address
+     * @param amount Amount to be sent in transaction
+     * @param data hex value of data
+     * @return It will return transaction hex of the raw transaction.
+     */
+
+    public String createRawTransaction(String sender_address, String receiver_address, double amount, String data) throws IOException, JSONException {
 
         this.sender_address = "\"" + sender_address + "\"";
-        this.reciever_address = "\"" + reciever_address + "\"";
+        this.receiver_address = "\"" + receiver_address + "\"";
         this.amount = amount;
         this.datahex = "\"" + data + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.reciever_address + " :" + this.amount + "}, [" + this.datahex + "],\"\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.receiver_address + " :" + this.amount + "}, [" + this.datahex + "],\"\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -89,6 +157,18 @@ public class Transactions {
 
         return txhex;
     }
+
+    /**
+     * Sign raw transaction. <br>
+     * signRawTransaction() function is used to sign raw transaction by passing transaction hex of the raw transaction and the private key to sign the raw transaction.
+     * <p><code>  signRawTransaction(tx_hex, private_key); <br>
+     * signed_hex = signRawTransaction(txHex, private_key); <br>
+     * System.out.println(signed_hex);      //prints signed transaction hex of the raw transaction</code></p>
+     * You have to pass these three arguments to the signRawTransaction function call:
+     * @param txHex Transaction hex of the raw transaction
+     * @param private_key Private key to sign raw transaction
+     * @return It will return signed transaction hex of the raw transaction.
+     */
 
     public String signRawTransaction(String txHex, String private_key) throws IOException, JSONException {
 
@@ -114,6 +194,17 @@ public class Transactions {
         return signedHex;
     }
 
+    /**
+     * Send raw transaction. <br>
+     * sendRawTransaction() function is used to send raw transaction by passing signed transaction hex of the raw transaction.
+     * <p><code> sendRawTransaction(signed_txHex); <br>
+     * tx_id = sendRawTransaction(signed_txHex); <br>
+     * System.out.println(tx_id);     //prints transaction id of the raw transaction</code></p>
+     * You have to pass these three arguments to the sendRawTransaction function call:
+     * @param signed_txHex Signed transaction hex of the raw transaction
+     * @return It will return transaction id of the raw transaction sent on to the Blockchain.
+     */
+
     public String sendRawTransaction(String signed_txHex) throws IOException, JSONException {
 
         this.signed_txHex = "\"" + signed_txHex + "\"";
@@ -136,22 +227,36 @@ public class Transactions {
             System.out.println(txid);
         } else {
             txid = jsonObject.getString("result");
-            System.out.println(txid);
         }
         return txid;
     }
 
-    public String sendSignedTransaction(String sender_address, String reciever_address, double amount, String private_key, String data) throws IOException, JSONException {
+    /**
+     * Send Transaction by signing with private key.<br>
+     * sendSignedTransaction() function is used to send transaction by passing reciever's address, sender's address, private key of sender and amount. In this function private key is required to sign transaction.
+     * <p><code>sendSignedTransaction(); <br>
+     * transaction_id = sendSignedTransaction(); <br>
+     * System.out.println(transaction_id);        //prints transaction id of the signed transaction</code></p>
+     * You have to pass these four arguments to the sendSignedTransaction function call:
+     * @param sender_address Transaction's sender address
+     * @param receiver_address Transaction's receiver address
+     * @param amount Amount to be sent in transaction
+     * @param private_key Private key of the sender's address
+     * @param data hex value of the data
+     * @return It will return transaction id of the signed transaction.
+     */
+
+    public String sendSignedTransaction(String sender_address, String receiver_address, double amount, String private_key, String data) throws IOException, JSONException {
 
 
         this.sender_address = "\"" + sender_address + "\"";
-        this.reciever_address = "\"" + reciever_address + "\"";
+        this.receiver_address = "\"" + receiver_address + "\"";
         this.amount = amount;
         this.private_key = "\"" + private_key + "\"";
         this.datahex = "\"" + data + "\"";
         List<String> output = Arrays.asList(this.private_key);
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.reciever_address + " :" + this.amount + "}, [" + this.datahex + "],\"\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createrawsendfrom\",\"params\":[" + this.sender_address + ", {" + this.receiver_address + " :" + this.amount + "}, [" + this.datahex + "],\"\"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -197,14 +302,26 @@ public class Transactions {
         if (jsonObject.isNull("result")) {
             JSONObject object = jsonObject2.getJSONObject("error");
             txid = object.getString("message");
-            System.out.println(txid);
         } else {
             txid = jsonObject2.getString("result");
         }
         return txid;
     }
 
-    public String retrieveTransaction(String txid) throws IOException, JSONException {
+    /**
+     * Retrieve a transaction from the Blockchain. <br>
+     * retrieveTransaction() function is used to retrieve transaction's information by passing transaction id to the function.
+     * <p><code> retrieveTransaction(tx_id); <br>
+     * sent_data, sent_amount, reciever_address = retrieveTransaction(tx_id); <br>
+     * System.out.println(sent_data);              //prints sent data <br>
+     * System.out.println(sent_amount);                //prints sent amount <br>
+     * System.out.println(receiver_address);            //prints receiver's address  </code></p>
+     * You have to pass given argument to the retrieveTransaction function call:
+     * @param txid Transaction id of the transaction you want to retrieve
+     * @return It will return the sent data, sent amount and reciever's address of the retrieved transaction.
+     */
+
+    public JSONObject retrieveTransaction(String txid) throws IOException, JSONException {
 
         this.txid = "\"" + txid + "\"";
 
@@ -226,12 +343,26 @@ public class Transactions {
         String sent_data = new String(bytes);
         JSONArray amount = object.getJSONArray("vout");
         JSONObject value = amount.getJSONObject(0);
-        System.out.println(value);
-        double sent_amount = (double) value.get("value");
-        System.out.println(sent_amount);
+        double sent_amount = value.getDouble("value");
 
-        return sent_data; //sent_data, sent_amount;
+        JSONObject item = new JSONObject();
+        item.put("sent_data", sent_data);
+        item.put("sent_amount", sent_amount);
+
+        return item;
     }
+
+    /**
+     * Calculate a particular transaction's fee on RecordsKeeper Blockchain. <br>
+     * getFee() function is used to calculate transaction's fee by passing transaction id and sender's address to the function.
+     * <p><code> getFee(address, tx_id);
+     * Fees = getFee(address, tx_id);
+     * System.out.println(Fees);                   //prints fees consumed in the verified transaction</code></p>
+     * You have to pass these two arguments to the getFee function call:
+     * @param address Sender's address
+     * @param txid Transaction id of the transaction you want to calculate fee for
+     * @return It will return the fees consumed in the transaction.
+     */
 
     public double getFee(String address, String txid) throws IOException, JSONException {
 

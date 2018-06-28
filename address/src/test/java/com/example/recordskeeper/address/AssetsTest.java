@@ -1,6 +1,7 @@
 package com.example.recordskeeper.address;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,31 +20,33 @@ public class AssetsTest {
     @Test
     public void createAsset() throws Exception {
 
-        Object txid = Assets.createAsset("1TcfvD39TZES3q6khfG8B43eGDNAVqTqMxAHvv", "xyz", 100);
-        assertEquals(txid, null);
+        String txid = Assets.createAsset(validaddress, "qwerty", 100);
+        assertEquals(txid, "Asset or stream with this name already exists.");
 
     }
 
     @Test
     public void retrieveasset() throws IOException, JSONException {
 
-        String name = Assets.retrieveAssets();
-        assertEquals(name, "xyzd");
+        JSONObject item = Assets.retrieveAssets();
 
-        //String txid = Assets.retrieveAssets();
-        //assertArrayEquals(txid, "");
+        String asset_name = item.getString("asset_name");
+        assertEquals(asset_name, "xyzd");
 
-        //int qty = Assets.retrieveAssets();
-        //assertArrayEquals(qty, 100);
+        String txid = item.getString("issue_id");
+        assertEquals(txid, "xyzd");
+
+        int qty = item.getInt("issue_qty");
+        assertEquals(qty, 100);
 
     }
 
     @Test
     public void sendAsset() throws Exception {
 
-        String txid = Assets.sendasset("1TcfvD39TZES3q6khfG8B43eGDNAVqTqMxAHvv", "xyz", 100);
-        System.out.println(txid);
-        assertEquals(txid, "618e1145febb40ec8dcbf2aceb1ee31c7fda0466655d76b98576425c683ead35");
+        String txid = Assets.sendAssets(validaddress, "xyz", 10);
+        int txid_len = txid.length();
+        assertEquals(txid_len, 64);
 
     }
 

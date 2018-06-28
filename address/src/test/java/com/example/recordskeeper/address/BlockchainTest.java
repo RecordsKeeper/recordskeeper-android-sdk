@@ -1,6 +1,7 @@
 package com.example.recordskeeper.address;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import java.io.IOException;
 import static org.junit.Assert.*;
@@ -17,29 +18,35 @@ public class BlockchainTest {
 
     @Test
     public void getChainInfo() throws Exception {
-        String chainname = Blockchain.getChainInfo();
-        assertEquals(chainname, chain);
 
-   //     String rootstream = Blockchain.getChainInfo();
-   //     assertEquals(rootstream, stream);
+        JSONObject item = Blockchain.getChainInfo();
 
-       // int rpcport = Blockchain.getChainInfo();
-       // assertEquals(rpcport, port);
+        String chain_name = item.getString("chain_name");
+        assertEquals(chain_name, chain);
 
-       // int networkport = Blockchain.getChainInfo();
-       // assertEquals(networkport, 8379);
+        String rootstream = item.getString("root_stream_name");
+        assertEquals(rootstream, stream);
+
+        int rpcport = item.getInt("default_rpcport");
+        assertEquals(rpcport, port);
+
+        int networkport = item.getInt("default_networkport");
+        assertEquals(networkport, 8379);
     }
 
     @Test
-    public void getNodeInfo() throws IOException, JSONException {
-        int info = Blockchain.getNodeInfo();
-        assertNotEquals(info, 60);
+    public void getnodeInfo() throws IOException, JSONException {
 
-     // int balance = Blockchain.getNodeInfo();
-     // assertNotNull(balance);
+        JSONObject item = Blockchain.getNodeInfo();
 
-     //   int difficulty = Blockchain.getNodeInfo();
-     //   assertNotSame(difficulty, 1);
+        int blocks = item.getInt("blocks");
+        assertNotNull(blocks);
+
+        int balance = item.getInt("balance");
+        assertNotNull(balance);
+
+        double difficulty = item.getDouble("difficulty");
+        assertNotNull(difficulty);
     }
 
     @Test
@@ -50,16 +57,19 @@ public class BlockchainTest {
 
     @Test
     public void getpendingTransactions() throws IOException, JSONException {
-        String pendingtx = Blockchain.getpendingTransactions();
-        assertEquals(pendingtx, "[]");
 
-        //int pendingtxcount = Blockchain.getpendingTransactions();
-        //assertEquals(pendingtxcount, 0);
+        JSONObject item = Blockchain.getpendingTransactions();
+
+        String pendingtx = item.getString("tx");
+        assertEquals(pendingtx, "");
+
+        double pendingtxcount = item.getDouble("tx_count");
+        assertEquals(pendingtxcount, 0.0, 0.1);
     }
 
     @Test
     public void checkNodeBalance() throws IOException, JSONException {
-        int balance = Blockchain.checkNodeBalance();
-        assertNotEquals(balance, 0);
+        double balance = Blockchain.checkNodeBalance();
+        assertNotNull(balance);
     }
 }

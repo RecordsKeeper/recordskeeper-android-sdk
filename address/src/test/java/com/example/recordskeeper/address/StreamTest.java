@@ -1,6 +1,7 @@
 package com.example.recordskeeper.address;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -38,13 +39,15 @@ public class StreamTest {
 
     @Test
     public void retrieveWithAddress() throws IOException, JSONException {
-        String data = Stream.retrieveWithAddress(stream, miningaddress);
+        JSONObject item = Stream.retrieveWithAddress(stream, miningaddress);
+        String data = item.getString("data");
         assertEquals(data, "5468697320697320746573742064617461");
     }
 
     @Test
     public void retrieveWithKey() throws IOException, JSONException {
-        String data = Stream.retrieveWithKey(stream, testdata);
+        JSONObject item = Stream.retrieveWithKey(stream, testdata);
+        String data = item.getString("data");
         assertEquals(data, "5468697320697320746573742064617461");
     }
 
@@ -56,7 +59,9 @@ public class StreamTest {
 
     @Test
     public void retrieveItems() throws IOException, JSONException {
-        String result = Stream.retrieveItems(stream, 5);
-        assertEquals(result, "This is test data");
+
+        JSONObject item = Stream.retrieveItems(stream, 5);
+        String raw_data = item.getString("raw_data");
+        assertEquals(raw_data, "This is test data");
     }
 }

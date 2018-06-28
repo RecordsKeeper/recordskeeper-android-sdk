@@ -1,6 +1,7 @@
 package com.example.recordskeeper.address;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class TransactionsTest {
         String hexString = bigInt.toString(16);
 
         String txhex = Transactions.createRawTransaction(miningaddress, validaddress, amount, hexString);
+        System.out.println(txhex);
         int tx_size = txhex.length();
         assertEquals(tx_size, 268);
 
@@ -53,7 +55,7 @@ public class TransactionsTest {
     @Test
     public void signrawtransaction() throws IOException, JSONException {
 
-        String txhex = Transactions.signRawTransaction("0100000001fd52d9622262c0d491a93bd14b0190362b3d1c362a429750411a255bfd83e91a0000000000ffffffff03005a6202000000001976a914b2bc8a974aa0b9c4ad82ac0a7017160df0751f5888ac0000000000000000066a0474657374a0e61239000000001976a9145f2976565b53d4ed013b6131e98201e89787518688ac00000000", privatekey);
+        String txhex = Transactions.signRawTransaction(dumptxhex, privatekey);
         int tx_size = txhex.length();
         assertEquals(tx_size, 268);
     }
@@ -61,9 +63,8 @@ public class TransactionsTest {
     @Test
     public void sendrawtransaction() throws IOException, JSONException {
 
-        String txid = Transactions.sendRawTransaction("0100000001fd52d9622262c0d491a93bd14b0190362b3d1c362a429750411a255bfd83e91a000000006b483045022100d05595c9a60b3ee0d9ae6479a6f7be64a6fccf993bbfba1135fb1d68d873e41a02202fb4754f8447e0da862e0637183853640a4a0758f4dc0b42315d0d6332d2c2f90121038c1d7be91850add595b238c541d17cfa6e6d780a410bb7db4930a982cad933d4ffffffff03005a6202000000001976a914b2bc8a974aa0b9c4ad82ac0a7017160df0751f5888ac0000000000000000066a0474657374a0e61239000000001976a9145f2976565b53d4ed013b6131e98201e89787518688ac00000000");
-        int tx_size = txid.length();
-        assertEquals(tx_size, 64);
+        String txid = Transactions.sendRawTransaction(dumpsignedtxhex);
+        assertEquals(txid, "transaction already in block chain");
     }
 
     @Test
@@ -80,11 +81,14 @@ public class TransactionsTest {
 
     @Test
     public void retrievetransaction() throws IOException, JSONException {
-        String sentdata = Transactions.retrieveTransaction(dumptxid);
+
+        JSONObject item = Transactions.retrieveTransaction(dumptxid);
+
+        String sentdata = item.getString("sent_data");
         assertEquals(sentdata, "hellodata");
 
-        //int sentamount = Transactions.retrieveTransaction(dumptxid);
-        //assertNotEquals(sentamount, 0);
+        double sentamount = item.getDouble("sent_amount");
+        assertEquals(sentamount, 0.01, 0.8);
     }
 
     @Test
