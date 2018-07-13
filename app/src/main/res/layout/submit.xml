@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/parentlayout"
+    android:weightSum="1">
 
     <TabHost
         android:id="@+id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="500dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,6 +31,108 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="40dp"
+                            android:textSize="25sp"
+                            android:layout_marginLeft="30dp"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:text="Balance" />
+
+                        <TextView
+                            android:id="@+id/balance"
+                            android:layout_width="201dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="5dp" />
+
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:textSize="25sp"
+                            android:layout_marginLeft="30dp"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:text="Transaction History" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/nohistory"/>
+
+                        <TableLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp">
+
+                            <TableRow
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Transaction ID"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Time"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="Transaction Amount"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/history"
+                                android:layout_marginLeft="10dp">
+
+                                <TextView
+                                    android:id="@+id/id"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:id="@+id/time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:id="@+id/amount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                            </TableRow>
+
+                        </TableLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -37,6 +141,33 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_marginTop="40dp"
+                        android:textStyle="bold"
+                        android:textSize="25sp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Public Address" />
+
+                    <TextView
+                        android:id="@+id/dsfghjg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="20dp"
+                        android:text="Use this address to receive payments."
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/pubadd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="20dp"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -44,6 +175,125 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sender's XRK Address:" />
+
+                    <TextView
+                        android:id="@+id/sendersadd"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"/>
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enter Recipient Address" />
+
+                    <EditText
+                        android:id="@+id/editText7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:hint="Recipient Address"
+                        android:ems="10"
+                        android:inputType="text" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enter XRK Amount" />
+
+                    <EditText
+                        android:id="@+id/editText8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:hint="XRK Amount"
+                        android:ems="10"
+                        android:inputType="number" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/textView23"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textStyle="bold"
+                            android:layout_marginTop="20dp"
+                            android:textSize="18sp"
+                            android:text="Optional Record Data" />
+
+
+                        <TextView
+                            android:id="@+id/textView14"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginLeft="30dp"
+                            android:textStyle="bold"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Enter the Key Label for Transaction" />
+
+                        <EditText
+                            android:id="@+id/editText9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:ems="10"
+                            android:hint="Record Identifier Key"
+                            android:inputType="text" />
+
+                        <TextView
+                            android:id="@+id/textView15"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="30dp"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Enter the Data to Save" />
+
+
+                        <EditText
+                            android:id="@+id/editText10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:ems="10"
+                            android:hint="Optional Data"
+                            android:inputType="text" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/buttonsendtransaction"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="115dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SEND TRANSACTION" />
 
                 </LinearLayout>
             </FrameLayout>
