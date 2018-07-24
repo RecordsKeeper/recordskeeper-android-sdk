@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.recordskeeper.address</groupId>
+  <artifactId>com.example.recordskeeper.address</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <build>
+    <sourceDirectory>addess/src/java/com/example/recordskeeper/address</sourceDirectory>
+    <testSourceDirectory>address/src/test/java/com/example/recordskeeper/address/</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/package2</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source/>
+          <target/>
+        </configuration>
+      </plugin>
+      
+      
+      
+      
+      
+    
+        <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <configuration>
+    <excludes>
+      <exclude>**/*AddressTest.java</exclude>
+    </excludes>
+  </configuration>
+  <executions>
+    <execution>
+      <id>integration-test</id>
+      <goals>
+        <goal>test</goal>
+      </goals>
+      <phase>integration-test</phase>
+      <configuration>
+        <excludes>
+          <exclude>none</exclude>
+        </excludes>
+        <includes>
+          <include>**/*AddressTest.java</include>
+        </includes>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </plugins>
+ </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.json</groupId>
+  		<artifactId>json</artifactId>
+  		<version>20180130</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>io.github.openunirest</groupId>
+  		<artifactId>unirest-java</artifactId>
+  		<version>2.2.08</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.squareup.okhttp3</groupId>
+  		<artifactId>okhttp</artifactId>
+  		<version>3.11.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.squareup.okio</groupId>
+  		<artifactId>okio</artifactId>
+  		<version>1.14.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.12</version>
+  	</dependency>
+  </dependencies>
+</project>
