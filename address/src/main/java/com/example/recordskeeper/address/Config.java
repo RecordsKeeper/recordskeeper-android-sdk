@@ -30,12 +30,21 @@ public class Config {
      */
 
         public static String getProperty(String key) throws IOException {
-            Properties prop = new Properties();
-            InputStream inputStream = new FileInputStream("address/src/main/res/config.properties");
-            prop.load(inputStream);
-            inputStream.close();
+           Properties prop = new Properties();
+            String value = null;
 
-            String value = prop.getProperty(key);
+            String path = "config.properties";
+            File file = new File(path);
+            if(file.exists())
+            {
+                FileInputStream fs = new FileInputStream(path);
+                prop.load(fs);
+                fs.close();
+                value = prop.getProperty(key);
+            }else{
+                value = null;
+            }
+
             return value;
         }
 
