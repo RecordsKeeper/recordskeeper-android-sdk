@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="package2">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../Downloads/eclipse/"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+    </path>
+    <path id="package2.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../../Downloads/org.json.jar/org.json.jar"/>
+        <pathelement location="../../Downloads/unirest-java-1.4.7.jar"/>
+        <pathelement location="../../Downloads/okhttp-1.2.1-jar-with-dependencies.jar"/>
+        <pathelement location="../../Downloads/okhttp-3.10.0.jar"/>
+        <pathelement location="../../Downloads/jar_files (2)/okio-1.14.1.jar"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="package2.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="address (1)">
+        <java classname="package2.address" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="AddressTest.checkifMineAllowed">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.AddressTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="AddressTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.AddressTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="Assets">
+        <java classname="package2.Assets" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="AssetTest.createAsset">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.AssetTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="AssetTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.AssetTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="AssetTest.retrieveasset">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.AssetTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="block">
+        <java classname="package2.block" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="blockchain">
+        <java classname="package2.blockchain" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="BlockchainTest.getChainiInfo">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockchainTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="BlockchainTest.getChainInfo">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockchainTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="BlockchainTest.getNodeInfo">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockchainTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="BlockchainTest.jjj">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockchainTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="BlockchainTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockchainTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="BlockTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.BlockTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="Permissions">
+        <java classname="package2.Permissions" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="PermissionsTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.PermissionsTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="stream">
+        <java classname="package2.stream" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="StreamTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.StreamTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="transactions">
+        <java classname="package2.transactions" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="TransactionsTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.TransactionsTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="Wallet">
+        <java classname="package2.Wallet" failonerror="true" fork="yes">
+            <classpath refid="package2.classpath"/>
+        </java>
+    </target>
+    <target name="WalletTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.WalletTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="WalletTest.signmessage">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="package2.Test.WalletTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="package2.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
