@@ -206,6 +206,8 @@
                 android:text="Print Wallet"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:layout_marginLeft="405dp"
+                android:layout_marginTop="20dp"
                 android:linksClickable="true"/>
 
             <Button
@@ -213,6 +215,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="410dp"
+                android:background="@drawable/buttons"
+                android:textColor="#ffff"
                 android:layout_marginTop="20dp"
                 android:text="CLOSE" />
 

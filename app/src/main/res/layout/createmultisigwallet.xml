@@ -31,20 +31,87 @@
             android:layout_marginRight="10dp"
             android:text='You can submit the public keys by filling the required no. of public keys in the input box. You can add any no of public keys by clicking on the "plus" button as per your requirement. In the “Required Signatures” dropdown list select the no. of required public addresses which must be passed to sign the transaction with multisignature address.' />
 
-        <ListView
+        <LinearLayout
+            android:id="@+id/vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:orientation="vertical">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="130dp"
-            android:clickable="true"
-            app:fabSize="mini"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            <LinearLayout
+                android:id="@+id/repeat"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
+                    android:text="Public Key 1"
+                    android:id="@+id/pk"/>
+
+                <EditText
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="155dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Public Key 1"
+                    android:id="@+id/pubkey" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/repeat1"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
+                    android:text="Public Key 2"
+                    android:id="@+id/pk2"/>
+
+                <EditText
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="155dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Public Key 2"
+                    android:id="@+id/pubkey2" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="100dp"
+                android:clickable="true"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_input_add" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/delete"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:clickable="true"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,6 +145,8 @@
             <Button
                 android:id="@+id/buttoncreatemultisig"
                 android:layout_width="match_parent"
+                android:background="@drawable/buttons"
+                android:textColor="#ffff"
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -86,12 +155,14 @@
         </LinearLayout>
 
         <Button
-        android:id="@+id/buttonclosecreatemultisig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="230dp"
-        android:layout_marginTop="20dp"
-        android:text="CLOSE" />
+            android:id="@+id/buttonclosecreatemultisig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="230dp"
+            android:background="@drawable/buttons"
+            android:textColor="#ffff"
+            android:layout_marginTop="10dp"
+            android:text="CLOSE" />
 
     </LinearLayout>
 
