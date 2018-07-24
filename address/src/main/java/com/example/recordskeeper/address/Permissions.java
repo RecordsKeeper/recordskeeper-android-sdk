@@ -8,7 +8,11 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * <h1>Permissions Class Usage</h1>
@@ -49,23 +53,45 @@ public class Permissions {
     private String address;
     private String permissions;
     private String resp;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
+    public boolean getPropert() throws IOException {
 
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+        prop = new Properties();
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Default Constructor Class
      */
 
-    public Permissions() throws IOException {}
+    public Permissions() throws IOException {
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      * Grant Permissions to an address on the RecordsKeeper Blockchain.<br>
@@ -80,6 +106,10 @@ public class Permissions {
      */
 
     public String grantPermission(String address, String permissions) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.address = "\"" + address + "\"";
         this.permissions = "\"" + permissions + "\"";
@@ -119,6 +149,10 @@ public class Permissions {
      */
 
     public String revokePermission(String address, String permissions) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.address = "\"" +address+ "\"";
         this.permissions = "\"" +permissions+ "\"";

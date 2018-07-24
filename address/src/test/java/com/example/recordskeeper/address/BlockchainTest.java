@@ -3,18 +3,49 @@ package com.example.recordskeeper.address;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 public class BlockchainTest {
 
     Blockchain Blockchain = new Blockchain();
-    Config cfg = new Config();
-    String chain = cfg.getProperty("chain");
-    String stream = cfg.getProperty("stream");
-    int port = Integer.parseInt(cfg.getProperty("port"));
+    public Properties prop;
+    public String chain;
+    public String stream;
+    public String port;
 
-    public BlockchainTest() throws IOException {}
+    public boolean getPropert() throws IOException {
+
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public BlockchainTest() throws IOException {
+        if (getPropert() == true) {
+            chain = prop.getProperty("chain");
+            stream = prop.getProperty("stream");
+            port = prop.getProperty("qty");
+        } else {
+            chain = System.getenv("chain");
+            stream = System.getenv("stream");
+            port = System.getenv("qty");
+        }
+    }
 
     @Test
     public void getChainInfo() throws Exception {

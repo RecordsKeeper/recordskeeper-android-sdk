@@ -3,8 +3,13 @@ package com.example.recordskeeper.address;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,20 +18,43 @@ import static org.junit.Assert.*;
 public class StreamTest {
 
     Stream Stream = new Stream();
-    Config cfg = new Config();
-    String miningaddress = cfg.getProperty("miningaddress");
-    String stream = cfg.getProperty("stream");
-    String testdata = cfg.getProperty("testdata");
+    public Properties prop;
+    public String miningaddress;
+    public String stream;
+    public String testdata;
 
-    public StreamTest() throws IOException {}
+    public boolean getPropert() throws IOException {
+
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public StreamTest() throws IOException {
+        if (getPropert() == true) {
+            miningaddress = prop.getProperty("miningaddress");
+            stream = prop.getProperty("stream");
+            testdata = prop.getProperty("testdata");
+        } else {
+            miningaddress = System.getenv("miningaddress");
+            stream = System.getenv("stream");
+            testdata = System.getenv("testdata");
+        }
+    }
 
     @Test
     public void publish() throws Exception {
-        byte[] bytes = "This is test data".getBytes("UTF-8");
-        BigInteger bigInt = new BigInteger(bytes);
-        String hexString = bigInt.toString(16);
 
-        String txid = Stream.publish(miningaddress, stream, testdata, hexString);
+        String txid = Stream.publish(miningaddress, stream, testdata, "This is test data");
         int tx_size = txid.length();
         assertEquals(tx_size, 64);
     }
@@ -62,6 +90,6 @@ public class StreamTest {
 
         JSONObject item = Stream.retrieveItems(stream, 5);
         String raw_data = item.getString("raw_data");
-        assertEquals(raw_data, "This is test data");
+        assertEquals(raw_data, "LANDOWNERSHIP");
     }
 }

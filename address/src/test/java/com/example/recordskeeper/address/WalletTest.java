@@ -3,30 +3,61 @@ package com.example.recordskeeper.address;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 public class WalletTest {
 
     Wallet wallet = new Wallet();
+    public Properties prop;
+    public String miningaddress;
+    public String testdata;
+    public String privatekey;
+    public String signedtestdata;
 
-    Config cfg = new Config();
-    String validaddress = cfg.getProperty("validaddress");
-    String privatekey = cfg.getProperty("privatekey");
-    String testdata = cfg.getProperty("testdata");
-    String signedtestdata = cfg.getProperty("signedtestdata");
-    String miningaddress = cfg.getProperty("miningaddress");
+    public boolean getPropert() throws IOException {
 
-    public WalletTest() throws IOException {}
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public WalletTest() throws IOException {
+        if (getPropert() == true) {
+            miningaddress = prop.getProperty("miningaddress");
+            testdata = prop.getProperty("testdata");
+            privatekey = prop.getProperty("privatekey");
+            signedtestdata = prop.getProperty("signedtestdata");
+        } else {
+            miningaddress = System.getenv("miningaddress");
+            testdata = System.getenv("testdata");
+            privatekey = System.getenv("privatekey");
+            signedtestdata = System.getenv("signedtestdata");
+        }
+    }
 
     @Test
     public void createWallet() throws Exception {
 
         JSONObject item = wallet.createWallet();
-
         String address = item.getString("public_address");
         int address_size = address.length();
         assertEquals(address_size, 34);
+
     }
 
     @Test

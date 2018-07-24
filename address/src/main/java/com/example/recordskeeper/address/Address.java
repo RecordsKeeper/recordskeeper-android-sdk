@@ -1,5 +1,6 @@
 package com.example.recordskeeper.address;
 
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -9,8 +10,12 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * <h1>Address Class Usage</h1>
@@ -51,29 +56,52 @@ import java.util.Arrays;
 
 public class Address{
 
-    private String address;
-    private String res;
-    private String key;
-    private int nrequired;
-    private String public_address;
-    private String resp;
+    public String address;
+    public String res;
+    public String key;
+    public int nrequired;
+    public String public_address;
+    public String resp;
+    public double balance;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
+    public boolean getPropert() throws IOException {
 
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+        prop = new Properties();
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Default Constructor Class
      */
 
-    public Address() throws IOException{}
+    public Address() throws IOException{
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      * Generate new address on the node's wallet.<br>
@@ -85,6 +113,10 @@ public class Address{
      */
 
     public String getAddress() throws IOException, JSONException{
+
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getnewaddress\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
@@ -99,6 +131,7 @@ public class Address{
         resp = response.body().string();
         JSONObject jsonObject = new JSONObject(resp);
         address = jsonObject.getString("result");
+
         return address;
     }
 
@@ -114,6 +147,10 @@ public class Address{
      */
 
     public String getMultisigAddress(int nrequired, String key) throws IOException, JSONException{
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.nrequired = nrequired;
         this.key = key;
@@ -163,10 +200,14 @@ public class Address{
 
     public String getMultisigWalletAddress(int nrequired, String key) throws IOException, JSONException{
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.nrequired = nrequired;
         this.key = key;
 
-        String keys = "";
+        String keys;
         String output = "";
         String[] key_list = key.split(",");
         for (int i = 0; i < key_list.length; i++){
@@ -176,7 +217,7 @@ public class Address{
             else output += keys;
         }
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"addmultisigaddress\",\"params\":["+this.nrequired+","+Arrays.asList(output)+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"addmultisigaddress\",\"params\":["+this.nrequired+","+Arrays.asList(output)+"], \"id\": 1, \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -210,7 +251,11 @@ public class Address{
 
     public JSONObject retrieveAddresses() throws IOException, JSONException {
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getaddresses\",\"params\":[],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\"" + chain + "\"}\n");
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getaddresses\",\"params\":[],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -246,9 +291,13 @@ public class Address{
 
     public String checkifValid(String address) throws IOException, JSONException{
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.address = "\""+address+"\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"validateaddress\",\"params\":["+this.address+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"validateaddress\",\"params\":["+this.address+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -284,9 +333,13 @@ public class Address{
 
     public String checkifMineAllowed(String address) throws IOException, JSONException{
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.address = "\""+address+"\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"validateaddress\",\"params\":["+this.address+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"validateaddress\",\"params\":["+this.address+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -299,7 +352,6 @@ public class Address{
         resp = response.body().string();
         JSONObject jsonObject = new JSONObject(resp);
         JSONObject jsonObject1 = jsonObject.getJSONObject("result");
-        String add = jsonObject1.getString("address");
         Boolean permission = jsonObject1.getBoolean("ismine");
 
         if (permission)
@@ -321,11 +373,13 @@ public class Address{
      * @return It will return the balance of the address on RecordsKeeper Blockchain.
      */
 
-    public int checkBalance(String address) throws IOException, JSONException{
+    public double checkBalance(String address) throws IOException, JSONException{
 
-        this.address = "\""+address+"\"";
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getaddressbalances\",\"params\":["+this.address+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getaddressbalances\",\"params\":[\""+address+"\"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -339,7 +393,7 @@ public class Address{
         JSONObject jsonObject = new JSONObject(resp);
         JSONArray array = jsonObject.getJSONArray("result");
         JSONObject object = array.getJSONObject(0);
-        int balance = object.getInt("qty");
+        balance = object.getDouble("qty");
 
         return balance;
     }
@@ -356,10 +410,15 @@ public class Address{
      */
 
     public String importAddress(String public_address) throws IOException, JSONException{
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.public_address = "\""+public_address+"\"";
         boolean False = false;
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"importaddress\",\"params\":["+this.public_address+", \""+null+"\" , "+False+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"importaddress\",\"params\":["+this.public_address+", \""+null+"\" , "+False+"],\"jsonrpc\": \"2.0\", \"id\": \"curltext\", \"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)

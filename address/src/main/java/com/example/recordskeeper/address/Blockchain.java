@@ -9,7 +9,11 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * <h1>Blockchain Class Usage</h1>
@@ -51,23 +55,45 @@ public class Blockchain {
 
     private String permission;
     private String resp;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
+    public boolean getPropert() throws IOException {
 
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+        prop = new Properties();
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Default Constructor Class
      */
 
-    public Blockchain() throws IOException {}
+    public Blockchain() throws IOException {
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      * Retrieve Blockchain parameters of RecordsKeeper Blockchain.<br>
@@ -86,6 +112,10 @@ public class Blockchain {
      */
 
     public JSONObject getChainInfo() throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getblockchainparams\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
@@ -136,6 +166,10 @@ public class Blockchain {
 
     public JSONObject getNodeInfo() throws IOException, JSONException {
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getinfo\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
@@ -147,7 +181,6 @@ public class Blockchain {
 
         Response response = client.newCall(request).execute();
         resp = response.body().string();
-        System.out.println(resp);
         JSONObject jsonObject = new JSONObject(resp);
         JSONObject object = jsonObject.getJSONObject("result");
         int node_balance = object.getInt("balance");
@@ -174,6 +207,10 @@ public class Blockchain {
      */
 
     public String permissions() throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"listpermissions\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
@@ -210,6 +247,10 @@ public class Blockchain {
      */
 
     public JSONObject getpendingTransactions() throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getmempoolinfo\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
@@ -265,6 +306,10 @@ public class Blockchain {
      */
 
     public double checkNodeBalance() throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getmultibalances\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()

@@ -9,7 +9,13 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Properties;
+
 import static okio.ByteString.decodeHex;
 
 /**
@@ -59,23 +65,45 @@ public class Stream {
     private String raw_data = "";
     private String resp;
     private int count;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
+    public boolean getPropert() throws IOException {
 
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+        prop = new Properties();
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Default Constructor Class
      */
 
-    public Stream() throws IOException {}
+    public Stream() throws IOException {
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      * Publish <br>
@@ -93,7 +121,15 @@ public class Stream {
 
     public String publish(String address, String stream, String key, String data) throws IOException, JSONException {
 
-        this.datahex = "\"" + data + "\"";
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        byte[] bytes = data.getBytes("UTF-8");
+        BigInteger bigInt = new BigInteger(bytes);
+        String hexString = bigInt.toString(16);
+
+        this.datahex = "\"" + hexString + "\"";
         this.address = "\"" + address + "\"";
         this.stream = "\"" + stream + "\"";
         this.key = "\"" + key + "\"";
@@ -127,6 +163,10 @@ public class Stream {
      */
 
     public String retrieve(String stream, String txid) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.stream = "\"" + stream + "\"";
         this.txid = "\"" + txid + "\"";
@@ -168,6 +208,10 @@ public class Stream {
      */
 
     public JSONObject retrieveWithAddress(String stream, String address) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.stream = "\"" + stream + "\"";
         this.address = "\"" + address + "\"";
@@ -221,6 +265,10 @@ public class Stream {
 
     public JSONObject retrieveWithKey(String stream, String key) throws IOException, JSONException {
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.stream = "\"" + stream + "\"";
         this.key = "\"" + key + "\"";
 
@@ -271,6 +319,10 @@ public class Stream {
 
     public String verifyData(String stream, String data, int count) throws IOException, JSONException {
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         this.stream = "\"" + stream + "\"";
         this.data = "\"" + data + "\"";
         this.count = count;
@@ -320,6 +372,10 @@ public class Stream {
      */
 
     public JSONObject retrieveItems(String stream, int count) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.stream = "\"" +stream+ "\"";
         this.count = count;

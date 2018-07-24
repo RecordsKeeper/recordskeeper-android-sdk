@@ -3,7 +3,12 @@ package com.example.recordskeeper.address;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 /**
@@ -12,10 +17,33 @@ import static org.junit.Assert.*;
 public class BlockTest {
 
     Block Block = new Block();
-    Config cfg = new Config();
-    String mainaddress = cfg.getProperty("mainaddress");
 
-    public BlockTest() throws IOException {}
+    public Properties prop;
+    public String mainaddress;
+
+    public boolean getPropert() throws IOException {
+
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public BlockTest() throws IOException {
+        if (getPropert() == true) {
+            mainaddress = prop.getProperty("mainaddress");
+        } else {
+            mainaddress = System.getenv("mainaddress");
+        }
+    }
 
     @Test
     public void blockinfo() throws Exception {

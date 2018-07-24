@@ -9,7 +9,11 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * <h1>Assets Class Usage</h1>
@@ -46,7 +50,7 @@ import java.io.IOException;
  * Now we have node authentication credentials.
  */
 
-public class Assets {
+public class Assets{
 
     private String address;
     private String asset_name;
@@ -54,23 +58,46 @@ public class Assets {
     private String issue_id;
     private int issue_qty;
     private String resp;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
+    public boolean getPropert() throws IOException {
 
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+        prop = new Properties();
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Default Constructor Class
      */
 
-    public Assets() throws IOException {}
+    public Assets() throws IOException {
+
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      * Create Assets on the RecordsKeeper Blockchain.<br>
@@ -86,6 +113,10 @@ public class Assets {
      */
 
     public String createAsset(String address, String asset_name, int asset_qty) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.address = "\"" + address + "\"";
         this.asset_name = "\"" + asset_name + "\"";
@@ -126,6 +157,10 @@ public class Assets {
 
     public JSONObject retrieveAssets() throws IOException, JSONException {
 
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
         RequestBody body = RequestBody.create(mediaType, "{\"method\":\"listassets\",\"params\":[],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
         Request request = new Request.Builder()
                 .url(url)
@@ -137,7 +172,6 @@ public class Assets {
 
         Response response = client.newCall(request).execute();
         resp = response.body().string();
-        System.out.println(resp);
         JSONObject jsonObject = new JSONObject(resp);
         JSONArray array = jsonObject.getJSONArray("result");
         JSONObject item = new JSONObject();
@@ -157,7 +191,6 @@ public class Assets {
 
         String out = "{\"Output\":["+output+"]}";
         JSONObject object1 = new JSONObject(out);
-        System.out.println(object1);
 
         return object1;
     }
@@ -176,6 +209,10 @@ public class Assets {
      */
 
     public String sendAssets(String address, String asset_name, int asset_qty) throws IOException, JSONException {
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
         this.address = "\"" + address + "\"";
         this.asset_name = "\"" + asset_name + "\"";

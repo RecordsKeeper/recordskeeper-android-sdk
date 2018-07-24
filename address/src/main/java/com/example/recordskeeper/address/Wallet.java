@@ -1,5 +1,6 @@
 package com.example.recordskeeper.address;
 
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -9,7 +10,11 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * <h1>Wallet Class Usage</h1>
@@ -47,33 +52,61 @@ import java.io.IOException;
 
 public class Wallet {
 
-    private String public_address;
-    private String filename;
-    private String password;
-    private int unlock_time;
-    private String old_password;
-    private String new_password;
-    private String private_key;
-    private String message;
-    private String address;
-    private String signedMessage;
-    private String resp;
+    public String filename;
+    public String public_address;
+    public String password;
+    public int unlock_time;
+    public String old_password;
+    public String new_password;
+    public String private_key;
+    public String public_key;
+    public String message;
+    public String address;
+    public String signedMessage;
+    public String resp;
+    public JSONObject item;
+    public String resp1;
+    public String public_addr;
+    public Properties prop;
+    public String url;
+    public String rkuser;
+    public String passwd;
+    public String chain;
 
-    Config cfg = new Config();
-    String url = cfg.getProperty("url");
-    String rkuser = cfg.getProperty("rkuser");
-    String passwd = cfg.getProperty("passwd");
-    String chain = cfg.getProperty("chain");
+    public boolean getPropert() throws IOException {
 
-    OkHttpClient client = new OkHttpClient();
-    MediaType mediaType = MediaType.parse("application/json");
-    String credential = Credentials.basic(rkuser, passwd);
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * Default Constructor Class
      */
 
-    public Wallet() throws IOException {}
+    public Wallet() throws IOException {
+        if (getPropert() == true) {
+            url = prop.getProperty("url");
+            rkuser = prop.getProperty("rkuser");
+            passwd = prop.getProperty("passwd");
+            chain = prop.getProperty("chain");
+        } else {
+            url = System.getenv("url");
+            rkuser = System.getenv("rkuser");
+            passwd = System.getenv("passwd");
+            chain = System.getenv("chain");
+        }
+    }
 
     /**
      *  Create wallet on RecordsKeeper blockchain. <br>
@@ -88,7 +121,11 @@ public class Wallet {
 
     public JSONObject createWallet() throws IOException, JSONException {
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createkeypairs\",\"params\":[],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"createkeypairs\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -102,15 +139,18 @@ public class Wallet {
         JSONObject jsonObject = new JSONObject(resp);
         JSONArray array = jsonObject.getJSONArray("result");
         JSONObject object = array.getJSONObject(0);
-        String public_address = object.getString("address");
-        String private_key = object.getString("privkey");
-        String public_key = object.getString("pubkey");
+        public_address = object.getString("address");
+        public_key = object.getString("pubkey");
+        private_key = object.getString("privkey");
+        item = new JSONObject();
+        item.put("public_address", public_address);
+        item.put("public_key", public_key);
+        item.put("private_key", private_key);
 
-        this.public_address = "\"" + public_address + "\"";
 
         boolean False = false;
 
-        RequestBody body1 = RequestBody.create(mediaType, "{\"method\":\"importaddress\",\"params\":[" + this.public_address + ",\"\"," + False + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body1 = RequestBody.create(mediaType, "{\"method\":\"importaddress\",\"params\":[\"" + public_address + "\",\"\"," + False + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request1 = new Request.Builder()
                 .url(url)
                 .method("POST", body1)
@@ -120,11 +160,7 @@ public class Wallet {
                 .build();
 
         Response response1 = client.newCall(request1).execute();
-        String resp1 = response1.body().string();
-        JSONObject item = new JSONObject(resp1);
-        item.put("public_address", public_address);
-        item.put("private_key", private_key);
-        item.put("public_key", public_key);
+        resp1 = response1.body().string();
 
         return item;
     }
@@ -141,9 +177,11 @@ public class Wallet {
 
     public String getPrivateKey(String public_address) throws IOException, JSONException {
 
-        this.public_address = "\"" + public_address + "\"";
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpprivkey\",\"params\":[" + this.public_address + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpprivkey\",\"params\":[\"" + public_address + "\"],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -154,7 +192,6 @@ public class Wallet {
 
         Response response = client.newCall(request).execute();
         resp = response.body().string();
-        System.out.println(resp);
         JSONObject jsonObject = new JSONObject(resp);
         String private_key = "";
         if (jsonObject.isNull("result")) {
@@ -178,7 +215,11 @@ public class Wallet {
 
     public JSONObject retrieveWalletinfo() throws IOException, JSONException {
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getwalletinfo\",\"params\":[],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"getwalletinfo\",\"params\":[],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -203,7 +244,7 @@ public class Wallet {
         return item;
     }
 
-    /**
+  /*  *//**
      * Create wallet's backup.<br>
      * backupWallet() function is used to create backup of the wallet.dat file.
      * <p><code>backupWallet(filename); <br>
@@ -212,13 +253,17 @@ public class Wallet {
      * You have to pass these three arguments to the backupWallet function call:
      * @param filename wallet's backup file name
      * @return It will return the response of the backup wallet function. The backup of the wallet is created in your chain's directory and you can simply access your file by using same filename that you have passed with the backupwallet function. Creates a backup of the wallet.dat file in which the node’s private keys and watch-only addresses are stored. The backup is created in file filename. Use with caution – any node with access to this file can perform any action restricted to this node’s addresses.
-     */
+     *//*
 
     public String backupWallet(String filename) throws IOException, JSONException {
 
         this.filename = "\"" + filename + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"backupwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"backupwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -242,7 +287,7 @@ public class Wallet {
         return message;
     }
 
-    /**
+    *//**
      * Import backup wallet.<br>
      * importWallet() function is used to import wallet's backup file.
      * <p><code>importWallet(filename); <br>
@@ -251,13 +296,17 @@ public class Wallet {
      * You have to pass these three arguments to the importWallet function call:
      * @param filename wallet's backup file name
      * @return It will return the response of the import wallet function. It will import the entire set of private keys which were dumped (using dumpwallet) into file filename.
-     */
+     *//*
 
     public String importWallet(String filename) throws IOException, JSONException {
 
         this.filename = "\"" + filename + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"importwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"importwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -280,7 +329,7 @@ public class Wallet {
         return result;
     }
 
-    /**
+    *//**
      * Dump wallet on RecordsKeeper blockchain.<br>
      * dumpWallet() function is used to retrieve transaction's information by passing transaction id to the function.
      * <p><code>dumpWallet(filename); <br>
@@ -289,13 +338,17 @@ public class Wallet {
      * You have to pass these three arguments to the dumpWallet function call:
      * @param filename file name to dump wallet in
      * @return It will return the response of the dump wallet function. Dumps the entire set of private keys in the wallet into a human-readable text format in file filename. Use with caution – any node with access to this file can perform any action restricted to this node’s addresses.
-     */
+     *//*
 
     public String dumpWallet(String filename) throws IOException, JSONException {
 
         this.filename = "\"" + filename + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpwallet\",\"params\":[" + this.filename + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -318,7 +371,7 @@ public class Wallet {
         return res;
     }
 
-    /**
+    *//**
      * Locking wallet with a password on RecordsKeeper Blockchain.<br>
      * lockWallet() function is used to verify transaction's information by passing transaction id and sender's address to the function.
      * <p><code>  lockWallet(password); <br>
@@ -327,13 +380,17 @@ public class Wallet {
      * You have to pass password as an argument to the lockWallet function call:
      * @param password password to lock the wallet
      * @return It will return the the response of the lock wallet function. This encrypts the node’s wallet for the first time, using passphrase as the password for unlocking. Once encryption is complete, the wallet’s private keys can no longer be retrieved directly from the wallet.dat file on disk, and chain will stop and need to be restarted. Use with caution – once a wallet has been encrypted it cannot be permanently unencrypted, and must be unlocked for signing transactions with the unlockwallet function.
-     */
+     *//*
 
     public String lockWallet(String password) throws IOException, JSONException {
 
         this.password = "\"" + password + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpwallet\",\"params\":[" + this.password + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"dumpwallet\",\"params\":[" + this.password + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -356,7 +413,7 @@ public class Wallet {
         return res;
     }
 
-    /**
+    *//**
      * Unlocking wallet with the password on RecordsKeeper Blockchain.<br>
      * unlockWallet() function is used to verify transaction's information by passing transaction id and sender's address to the function.
      * <p><code>unlockWallet(password, unlock_time); <br>
@@ -366,14 +423,18 @@ public class Wallet {
      * @param password password to unlock the wallet
      * @param unlock_time seconds for which wallet remains unlock
      * @return It will return the response of the unlock wallet function. This uses passphrase to unlock the node’s wallet for signing transactions for the next timeout seconds. This will also need to be called before the node can connect to other nodes or sign blocks that it has mined.
-     */
+     *//*
 
     public String unlockWallet(String password, int unlock_time) throws IOException, JSONException {
 
         this.password = "\"" + password + "\"";
         this.unlock_time = unlock_time;
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"walletpassphrase\",\"params\":[" + this.password + "," + this.unlock_time + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"walletpassphrase\",\"params\":[" + this.password + "," + this.unlock_time + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -396,7 +457,7 @@ public class Wallet {
         return res;
     }
 
-    /**
+    *//**
      * Change wallet's password. <br>
      * changeWalletPassword() function is used to change wallet's password and set new password.
      * <p><code>changeWalletPassword(old_password, new_password); <br>
@@ -406,14 +467,18 @@ public class Wallet {
      * @param old_password old password of the wallet
      * @param new_password new password of the wallet
      * @return This changes the wallet’s password from old-password to new-password.
-     */
+     *//*
 
     public String changeWalletPassword(String old_password, String new_password) throws IOException, JSONException {
 
         this.old_password = "\"" + old_password + "\"";
         this.new_password = "\"" + new_password + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"walletpassphrasechange\",\"params\":[" + this.old_password + "," + this.new_password + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"walletpassphrasechange\",\"params\":[" + this.old_password + "," + this.new_password + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -436,7 +501,7 @@ public class Wallet {
         }
         return res;
     }
-
+*/
     /**
      * Sign Message on RecordsKeeper Blockchain.<br>
      * signMessage() function is used to change wallet's password and set new password.
@@ -454,7 +519,11 @@ public class Wallet {
         this.private_key = "\"" + private_key + "\"";
         this.message = "\"" + message + "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"signmessage\",\"params\":[" + this.private_key + "," + this.message + "],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"signmessage\",\"params\":[" + this.private_key + "," + this.message + "],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)
@@ -490,7 +559,11 @@ public class Wallet {
         this.signedMessage = "\"" +signedMessage+ "\"";
         this.message = "\"" +message+ "\"";
 
-        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"verifymessage\",\"params\":[" + this.address+ "," + this.signedMessage + ","+this.message+"],\"id\":1,\"chain_name\":\"" + chain + "\"}\n");
+        final OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.parse("application/json");
+        String credential = Credentials.basic(rkuser, passwd);
+
+        RequestBody body = RequestBody.create(mediaType, "{\"method\":\"verifymessage\",\"params\":[" + this.address+ "," + this.signedMessage + ","+this.message+"],\"id\":1,\"chain_name\":\""+chain+"\"}\n");
         Request request = new Request.Builder()
                 .url(url)
                 .method("POST", body)

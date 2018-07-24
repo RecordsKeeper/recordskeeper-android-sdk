@@ -3,18 +3,42 @@ package com.example.recordskeeper.address;
 import org.json.JSONException;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
 public class PermissionsTest {
 
     Permissions permissions = new Permissions();
-    Config cfg = new Config();
+    public Properties prop;
+    public String validaddress;
 
-    String validaddress = cfg.getProperty("validaddress");
+    public boolean getPropert() throws IOException {
+
+        prop = new Properties();
+
+        String path = "config.properties";
+        File file = new File(path);
+        if (file.exists()) {
+            FileInputStream fs = new FileInputStream(path);
+            prop.load(fs);
+            fs.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public PermissionsTest() throws IOException {
+        if (getPropert() == true) {
+            validaddress = prop.getProperty("validaddress");
+        } else {
+            validaddress = System.getenv("validaddress");
+        }
     }
 
     @Test
