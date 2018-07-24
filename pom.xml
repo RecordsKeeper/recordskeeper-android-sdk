@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>package2</groupId>
-  <artifactId>package2</artifactId>
+  <groupId>com.example.recordskeeper.address</groupId>
+  <artifactId>com.example.recordskeeper.address</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>src/package2</sourceDirectory>
-    <testSourceDirectory>src/package2/Test</testSourceDirectory>
+    <sourceDirectory>addess/src/java/com/example/recordskeeper/address</sourceDirectory>
+    <testSourceDirectory>address/src/test/java/com/example/recordskeeper/address/</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/package2</directory>
