@@ -17,10 +17,8 @@
     <path id="package2.classpath">
         <pathelement location="bin"/>
         <pathelement location="../../Downloads/org.json.jar/org.json.jar"/>
-        <pathelement location="../../Downloads/unirest-java-1.4.7.jar"/>
         <pathelement location="../../Downloads/okhttp-1.2.1-jar-with-dependencies.jar"/>
         <pathelement location="../../Downloads/okhttp-3.10.0.jar"/>
-        <pathelement location="../../Downloads/jar_files (2)/okio-1.14.1.jar"/>
         <path refid="JUnit 4.libraryclasspath"/>
     </path>
     <target name="init">
