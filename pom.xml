@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.recordskeeper.address</groupId>
-  <artifactId>com.example.recordskeeper.address</artifactId>
+  <artifactId>address</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <build>
-    <sourceDirectory>addess/src/java/com/example/recordskeeper/address</sourceDirectory>
-    <testSourceDirectory>address/src/test/java/com/example/recordskeeper/address/</testSourceDirectory>
+    <sourceDirectory>address/src</sourceDirectory>
+    <testSourceDirectory>address/src/test/java/com/example/recordskeeper/address</testSourceDirectory>
     <resources>
       <resource>
-        <directory>src/package2</directory>
+        <directory>address/src/main/java/com/example/recordskeeper/address</directory>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>
@@ -56,48 +56,40 @@
   </executions>
 </plugin>
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+     
     </plugins>
  </build>
   <dependencies>
   	<dependency>
   		<groupId>org.json</groupId>
   		<artifactId>json</artifactId>
-  		<version>20180130</version>
+  		<version>20140107</version>
   	</dependency>
+  
   	<dependency>
-  		<groupId>io.github.openunirest</groupId>
-  		<artifactId>unirest-java</artifactId>
-  		<version>2.2.08</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.squareup.okhttp3</groupId>
+  		<groupId>com.squareup.okhttp</groupId>
   		<artifactId>okhttp</artifactId>
-  		<version>3.11.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.squareup.okio</groupId>
-  		<artifactId>okio</artifactId>
-  		<version>1.14.1</version>
-  	</dependency>
+  		<version>2.4.0</version>
+    </dependency>
+    
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<version>4.12</version>
   	</dependency>
+    
   </dependencies>
 </project>
+© 2018 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+API
+Training
+Shop
+Blog
+About
+Press h to open a hovercard with more details.
